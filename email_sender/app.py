@@ -1,49 +1,46 @@
-from flask import Flask, request, render_template, jsonify
-from email_sender import (
-    send_custom_email,
-    load_data,
-    connect_google_sheet,
-    dynamic_email_content,
-    generate_email_content,
-    get_oauth2_token
-)
-from scheduler import schedule_email_task
+from flask import Flask, render_template, request, redirect, url_for, flash
+from email_sender import send_emails
+from scheduler import schedule_emails
 import os
-import json
-import pandas as pd
 
 app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'my_secret_key')
 
 @app.route('/')
-def index():
+def dashboard():
     return render_template('dashboard.html')
 
-@app.route('/send_email', methods=['POST'])
-def send_email():
-    email_data = request.json
-    result = send_custom_email(email_data)
-    return jsonify(result)
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(url_for('dashboard'))
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(url_for('dashboard'))
+    if file:
+        file_path = os.path.join('uploads', file.filename)
+        file.save(file_path)
+        flash('File uploaded successfully')
+        return redirect(url_for('dashboard'))
 
-@app.route('/generate_content', methods=['POST'])
-def generate_content():
-    data = request.json
-    template = data.get('template')
-    row_data = data.get('row_data')
-    # Generate AI-based email content
-    content = generate_email_content(template, row_data)
-    return jsonify({"content": content})
+@app.route('/send_emails', methods=['POST'])
+def send_email_route():
+    data_source = request.form['data_source']
+    prompt_template = request.form['prompt']
+    send_emails(data_source, prompt_template)
+    flash('Emails sent successfully')
+    return redirect(url_for('dashboard'))
 
-@app.route('/get_oauth_token', methods=['GET'])
-def oauth_token():
-    # Example OAuth2 setup with Gmail
-    token = get_oauth2_token('path/to/client_secrets.json', 'token.json', ["https://mail.google.com/"])
-    return jsonify({"token": token})
+@app.route('/schedule_emails', methods=['POST'])
+def schedule_email_route():
+    schedule_time = request.form['schedule_time']
+    data_source = request.form['data_source']
+    prompt_template = request.form['prompt']
+    schedule_emails(data_source, prompt_template, schedule_time)
+    flash('Emails scheduled successfully')
+    return redirect(url_for('dashboard'))
 
-@app.route('/schedule_email', methods=['POST'])
-def schedule_email():
-    schedule_data = request.json
-    result = schedule_email_task.apply_async((schedule_data,))
-    return jsonify({"status": "Scheduled", "task_id": result.id})
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
