@@ -1,0 +1,8 @@
+{
+  "email_sender": {
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 465,
+    "email": "your-email@gmail.com",
+    "password": "your-password"
+  }
+}
