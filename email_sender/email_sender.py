@@ -2,6 +2,8 @@
 import smtplib
 from email.mime.text import MIMEText
 import pandas as pd
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 import json
 
 def send_custom_email(email_data):
@@ -25,3 +27,16 @@ def load_data(file_path):
     else:
         data = pd.read_excel(file_path)
     return data
+
+def connect_google_sheet(sheet_id, range_name="Sheet1"):
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    creds = ServiceAccountCredentials.from_json_keyfile_name('path/to/service_account.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(sheet_id).worksheet(range_name)
+    data = sheet.get_all_records()
+    return data
+
+def dynamic_email_content(prompt, row_data):
+    for column in row_data.keys():
+        prompt = prompt.replace(f"{{{{{column}}}}}", str(row_data[column]))
+    return prompt
