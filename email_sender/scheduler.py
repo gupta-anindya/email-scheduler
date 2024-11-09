@@ -1,10 +1,15 @@
 from celery import Celery
-from email_sender import send_emails
-import datetime
+import time
 
-app = Celery('tasks', broker='redis://localhost:6379/0')
+# Celery setup
+celery = Celery('tasks', broker='redis://localhost:6379/0')
 
-@app.task
-def schedule_emails(data_source, prompt_template, schedule_time):
-    delay = (datetime.datetime.strptime(schedule_time, '%Y-%m-%d %H:%M:%S') - datetime.datetime.now()).total_seconds()
-    app.send_task('tasks.send_emails', args=[data_source, prompt_template], countdown=delay)
+@celery.task
+def send_email_later(email_data):
+    time.sleep(5)  # Simulating delay
+    return send_custom_email(email_data)
+
+def schedule_email(email_data):
+    # Call the Celery task for scheduling
+    task = send_email_later.apply_async(args=[email_data], countdown=10)  # Email will be sent after 10 seconds
+    return {"status": "Scheduled", "email": email_data['recipient'], "task_id": task.id}
