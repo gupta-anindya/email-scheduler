@@ -1,14 +1,10 @@
-# scheduler.py
 from celery import Celery
-from email_sender import send_custom_email
-import json
-import time
+from email_sender import send_emails
+import datetime
 
-app = Celery('scheduler', broker='redis://localhost:6379/0')
+app = Celery('tasks', broker='redis://localhost:6379/0')
 
-@app.task(rate_limit='50/m')
-def schedule_email_task(email_data):
-    delay = email_data.get('delay', 0)
-    time.sleep(delay)
-    result = send_custom_email(email_data)
-    return result
+@app.task
+def schedule_emails(data_source, prompt_template, schedule_time):
+    delay = (datetime.datetime.strptime(schedule_time, '%Y-%m-%d %H:%M:%S') - datetime.datetime.now()).total_seconds()
+    app.send_task('tasks.send_emails', args=[data_source, prompt_template], countdown=delay)
