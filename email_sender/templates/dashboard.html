@@ -1,4 +1,4 @@
-<!-- dashboard.html -->
+<!-- templates/dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +12,20 @@
         <h3>Status: <span id="status">Pending</span></h3>
         <button onclick="sendEmail()">Send Email</button>
     </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Company Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Delivery Status</th>
+            </tr>
+        </thead>
+        <tbody id="email-status-table">
+            <!-- Populate with AJAX -->
+        </tbody>
+    </table>
 
     <script>
         function sendEmail() {
@@ -33,3 +47,4 @@
     </script>
 </body>
 </html>
+
