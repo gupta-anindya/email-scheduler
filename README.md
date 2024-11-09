@@ -1,6 +1,6 @@
 ---
 
-# Custom Email Sender for BreakoutAI
+# Custom Email Sender for BreakoutAI Internship
 
 This project is a custom email-sending application with scheduling, throttling, real-time tracking, and LLM-based content generation. It reads data from Google Sheets or CSV files, allows email account connections, customizes and sends AI-generated emails with dynamic fields, and tracks delivery statuses on a dashboard. The application includes secure credential management, OAuth2 support for secure email authentication, and enhanced error handling.
 
