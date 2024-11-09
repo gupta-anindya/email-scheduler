@@ -16,7 +16,6 @@ email_sender/
 ├── config.json         # Configuration for ESP settings and API keys
 ├── templates/
 │   └── dashboard.html  # Dashboard for real-time tracking
-├── uploads/            # Folder for uploaded CSV files
 ├── emails.db           # SQLite database for storing scheduled emails
 └── README.md           # Project documentation
 ```
