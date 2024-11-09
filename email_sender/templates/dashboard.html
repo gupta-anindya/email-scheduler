@@ -1,50 +1,33 @@
-<!-- templates/dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Dashboard</title>
 </head>
 <body>
     <h1>Email Dashboard</h1>
-    <div id="analytics">
-        <h3>Status: <span id="status">Pending</span></h3>
-        <button onclick="sendEmail()">Send Email</button>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Company Name</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Delivery Status</th>
-            </tr>
-        </thead>
-        <tbody id="email-status-table">
-            <!-- Populate with AJAX -->
-        </tbody>
-    </table>
-
-    <script>
-        function sendEmail() {
-            fetch('/send_email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "sender": "your-email@gmail.com",
-                    "recipient": "recipient-email@gmail.com",
-                    "subject": "Test Email",
-                    "content": "This is a test email.",
-                    "password": "your-email-password"
-                })
-            }).then(response => response.json())
-              .then(data => document.getElementById('status').innerText = data.status);
-        }
-    </script>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Upload CSV</button>
+    </form>
+    
+    <form action="/send_emails" method="post">
+        <label for="data_source">Data Source URL:</label>
+        <input type="text" name="data_source" required>
+        <label for="prompt">Prompt Template:</label>
+        <textarea name="prompt" required></textarea>
+        <button type="submit">Send Emails</button>
+    </form>
+    
+    <form action="/schedule_emails" method="post">
+        <label for="schedule_time">Schedule Time (YYYY-MM-DD HH:MM:SS):</label>
+        <input type="text" name="schedule_time" required>
+        <label for="data_source">Data Source URL:</label>
+        <input type="text" name="data_source" required>
+        <label for="prompt">Prompt Template:</label>
+        <textarea name="prompt" required></textarea>
+        <button type="submit">Schedule Emails</button>
+    </form>
 </body>
 </html>
 
