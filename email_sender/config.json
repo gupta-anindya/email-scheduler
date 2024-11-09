@@ -3,7 +3,11 @@
     "smtp_server": "smtp.gmail.com",
     "smtp_port": 465,
     "email": "your-email@gmail.com",
-    "password": "your-password"
+    "password": "your-email-password"
+  },
+  "esp": {
+    "sendgrid_api_key": "YOUR_SENDGRID_API_KEY"
   }
 }
+
 
