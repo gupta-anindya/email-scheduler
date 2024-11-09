@@ -1,0 +1,35 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Dashboard</title>
+</head>
+<body>
+    <h1>Email Dashboard</h1>
+    <div id="analytics">
+        <h3>Status: <span id="status">Pending</span></h3>
+        <button onclick="sendEmail()">Send Email</button>
+    </div>
+
+    <script>
+        function sendEmail() {
+            fetch('/send_email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "sender": "your-email@gmail.com",
+                    "recipient": "recipient-email@gmail.com",
+                    "subject": "Test Email",
+                    "content": "This is a test email.",
+                    "password": "your-email-password"
+                })
+            }).then(response => response.json())
+              .then(data => document.getElementById('status').innerText = data.status);
+        }
+    </script>
+</body>
+</html>
